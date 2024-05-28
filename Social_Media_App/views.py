@@ -4,9 +4,10 @@ from rest_framework.decorators import api_view,authentication_classes,permission
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication,TokenAuthentication,BaseAuthentication
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
-from rest_framework import status,viewsets
+from rest_framework import status,viewsets,filters
 from .models import *
-
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 # Create your views here.
 
@@ -14,8 +15,12 @@ from .models import *
 @api_view(["POST"])
 def Register(request):
     if request.method == "POST" :
+        email=EmailMessage("welcome to Social Media App",f"Hey {request.data.get('first_name')}, Thank you for registration in Social Media App",
+        settings.EMAIL_HOST_USER,[request.data.get('email')])
         serializer=RegistrationSerializers(data=request.data)
+        
         if serializer.is_valid(raise_exception=True):
+            email.send()
             serializer.save()
             return Response(serializer.data,status=201)
         
@@ -34,3 +39,21 @@ def Logout(request):
 class uploadORupdate(viewsets.ModelViewSet):
     queryset=Post.objects.all()
     serializer_class= Postserializers
+    search_fields = ['tag', 'title']
+    filterset_fields = ['title', 'tag','content','user']
+    
+class Likeview(viewsets.ModelViewSet):
+    queryset=Like.objects.all()
+    serializer_class= Likeserializers
+    filterset_fields = ['user','post']
+    
+class Commentview(viewsets.ModelViewSet):
+    queryset=Comment.objects.all()
+    serializer_class=Commentserializers
+    filterset_fields = ['user','post','comment']
+    
+    
+    
+   
+    
+    

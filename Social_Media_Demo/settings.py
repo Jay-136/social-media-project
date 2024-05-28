@@ -79,9 +79,9 @@ WSGI_APPLICATION = "Social_Media_Demo.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Social Media",
-        "USER": "pooja",
-        "PASSWORD": "virja@12345",
+        "NAME": "social media demo",
+        "USER": "jay",
+        "PASSWORD": "jay12345",
         "HOST": "localhost",
         "PORT": "5432",
 
@@ -132,5 +132,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':['rest_framework.authentication.TokenAuthentication'],
-    'DEFAULT_PERMISSION_CLASSES' : ['rest_framework.permissions.IsAuthenticated']
+    'DEFAULT_PERMISSION_CLASSES' : ['rest_framework.permissions.IsAuthenticated'],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend',
+                                'rest_framework.filters.SearchFilter'],
+    
 }
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "jay.200410116136@gmail.com"
+EMAIL_HOST_PASSWORD = "hdtthuoasdssskeo"
+EMAIL_USE_SSL = False

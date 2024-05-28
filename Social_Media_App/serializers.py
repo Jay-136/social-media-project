@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers,validators
 from django.contrib.auth.models  import User
 from .models import *
 
@@ -16,7 +16,7 @@ class RegistrationSerializers(serializers.ModelSerializer):
             first_name=self.validated_data['first_name'],
             last_name=self.validated_data['last_name'],
             username=self.validated_data['username'],
-            email = self.validated_data['email'],
+            email = self.validated_data['email']
         )
         Person.set_password(self.validated_data['password'])
         Person.save()
@@ -35,3 +35,24 @@ class Postserializers(serializers.ModelSerializer):
     class Meta :
         model=Post
         fields="__all__"
+        
+class Likeserializers(serializers.ModelSerializer):
+    
+    class Meta:
+        model=Like
+        fields=['user','post']
+        validators =[
+            validators.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=("user","post"),
+                message=("Already liked once")
+            )
+        ]
+        
+        
+class Commentserializers(serializers.ModelSerializer):
+    
+    class Meta :
+        model = Comment
+        fields = ['user','post','comment']
+        
