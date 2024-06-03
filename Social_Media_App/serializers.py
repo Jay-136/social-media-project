@@ -34,7 +34,7 @@ class Postserializers(serializers.ModelSerializer):
 
     class Meta :
         model=Post
-        fields="__all__"
+        fields=["title","image","content","tag","user"]
         
 class Likeserializers(serializers.ModelSerializer):
     
