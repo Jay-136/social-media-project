@@ -14,8 +14,9 @@ router.register(r'comment',views.Commentview)
 urlpatterns = [
     
     path("register/",views.Register.as_view(),name="Register"),
-    path("login/",obtain_auth_token,name="login"),
-    path("logout/",views.Logout,name="Logout"),
+    path("login/",views.LogIn.as_view(),name="login"),
+    path("logout/",views.Logout.as_view(),name="Logout"),
+    path('unlike/', views.remove_like, name='unlike'),
     path('',include(router.urls))
     
 ]

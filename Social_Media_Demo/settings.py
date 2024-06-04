@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "Social_Media_App",
     "rest_framework",
     "rest_framework.authtoken",
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ WSGI_APPLICATION = "Social_Media_Demo.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "social media demo",
+        "NAME": "social media demo new",
         "USER": "jay",
         "PASSWORD": "jay12345",
         "HOST": "localhost",
@@ -88,6 +89,7 @@ DATABASES = {
     }
 }
 
+PHONENUMBER_DEFAULT_REGION= "IN"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -134,10 +136,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':['rest_framework.authentication.TokenAuthentication'],
     'DEFAULT_PERMISSION_CLASSES' : ['rest_framework.permissions.IsAuthenticated'],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend',
-                                'rest_framework.filters.SearchFilter'],
+                                'rest_framework.filters.SearchFilter',
+                                'rest_framework.filters.OrderingFilter',],
     
 }
 
+AUTH_USER_MODEL = "Social_Media_App.CustomUser"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
