@@ -49,16 +49,16 @@ class Postserializers(serializers.ModelSerializer):
         fields=["title","image","content","tag","user","comment_count","like_count"]
         
     def get_comment_count(self, obj):
-        return obj.post_comment.count()
+        return obj.post_Comment.count()
     
     def get_like_count(self, obj):
-        return obj.post_like.count()    
+        return obj.post_Like.count()    
     
 class PostCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['title', 'image', 'content', 'tags', 'user']
+        fields = ['title', 'image', 'content', 'tag', 'user']
     
     def create(self, validated_data):
         validated_data['user'] = self.context.get('user')

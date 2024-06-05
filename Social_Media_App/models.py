@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
 
 class Post(models.Model):
     title=models.CharField()
-    image=models.ImageField(upload_to="Pictures")
+    image=models.ImageField(upload_to="Pictures",null=True)
     content=models.TextField(null=True, blank=True)
     tag=models.CharField()
     posted_at=models.DateTimeField(auto_now_add=True)

@@ -4,13 +4,14 @@ from rest_framework.decorators import api_view,authentication_classes,permission
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication,TokenAuthentication,BaseAuthentication
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
-from rest_framework import status, viewsets, generics, exceptions, authentication
+from rest_framework import status, viewsets, generics, exceptions, authentication,filters
 from .models import *
-from django.core.mail import EmailMessage
-from django.conf import settings
+# from django.core.mail import EmailMessage
+# from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
@@ -68,15 +69,35 @@ class Logout(generics.DestroyAPIView):
 
 #         except :
 #             return Response({"message":"User already logout"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+     
         
+class HasImageFilter(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        
+        hasimg = request.query_params.get('hasimg')
+        if hasimg is not None:
+            if hasimg.lower() == "true":
+                queryset=queryset.exclude(image__isnull=True).exclude(image="")
+                
+            elif hasimg.lower()=="false":
+                queryset=queryset.filter(image="")
+                # print(queryset)
+            else:
+                raise serializers.ValidationError("Expected true or false")
+        return queryset
+
+
+
+
 
 class uploadORupdate(viewsets.ModelViewSet):
-    queryset = Post.objects.prefetch_related('post_comment', 'post_like').all()
-    filterset_fields=['title', 'content', 'tags', 'user']
-    search_fields = ['title', 'tags']
+    queryset = Post.objects.prefetch_related('post_Comment', 'post_Like').all()
+    filterset_fields=['title', 'content', 'tag', 'user'] 
+    filter_backends=[HasImageFilter, DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['title', 'tag']
     
     def get_serializer_class(self):
-        if self.action in ["listall", "retrieve"]:
+        if self.action in ["listall", "retrieve","list"]:
             return Postserializers
         return PostCreateSerializer
     
