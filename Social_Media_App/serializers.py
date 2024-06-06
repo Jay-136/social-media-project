@@ -60,17 +60,33 @@ class Postserializers(serializers.ModelSerializer):
 #====================================================================#   
 #For Post Creating
 #====================================================================#   
-class PostCreateSerializer(serializers.ModelSerializer):
     
-    class Meta:
-        model = Post
-        fields = ['title', 'image', 'content', 'tag', 'user']
+class PostCreateSerializer(serializers.Serializer):
+    
+    title=serializers.CharField()
+    image=serializers.ImageField()
+    content=serializers.CharField()
+    tag=serializers.CharField()
+    user=serializers.CharField(required=False)
     
     def create(self, validated_data):
-        validated_data['user'] = self.context.get('user')
-        # print(validated_data)
-        # print(self.context)
-        return super().create(validated_data)
+        return Post.objects.create(title=validated_data['title'],
+                                   image=validated_data['image'],
+                                   content=validated_data['content'],
+                                   tag=validated_data['tag'],
+                                   user=self.context.get('user'))
+        
+        
+    def update(self, instance, validated_data):
+        instance.title=validated_data.get('title',instance.title)
+        instance.image=validated_data.get('image',instance.title)
+        instance.content=validated_data.get('content',instance.title)
+        instance.tag=validated_data.get('tag',instance.title)
+        instance.user=self.context.get('title')
+        instance.save()
+        return instance
+
+    
 
         
 class Likeserializers(serializers.ModelSerializer):

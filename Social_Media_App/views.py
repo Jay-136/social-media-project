@@ -6,8 +6,6 @@ from rest_framework.authentication import SessionAuthentication,TokenAuthenticat
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework import status, viewsets, generics, exceptions, authentication,filters
 from .models import *
-# from django.core.mail import EmailMessage
-# from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, get_user_model
@@ -16,19 +14,6 @@ from .pagination import PostNumberPagination,PostLimitOffsetPagination,PostCurso
 
 # Create your views here.
 
-
-# @api_view(["POST"])
-# def Register(request):
-#     # if request.method == "POST" :
-#         email=EmailMessage("welcome to Social Media App",f"Hey {request.data.get('first_name')}, Thank you for registration in Social Media App",
-#         settings.EMAIL_HOST_USER,[request.data.get('email')])
-#         serializer=RegistrationSerializers(data=request.data)
-        
-#         if serializer.is_valid(raise_exception=True):
-#             email.send()
-#             serializer.save()
-#             return Response(serializer.data,status=201)
-        
         
 #====================================================================#   
 #For New User Registration
@@ -69,15 +54,6 @@ class Logout(generics.DestroyAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)       
         
-# @api_view(["POST"]) 
-# def Logout(request):
-#     if request.method == "POST":
-#         try :
-#             request.user.auth_token.delete()
-#             return Response({"message":"Successfully logout"},status=status.HTTP_200_OK)
-
-#         except :
-#             return Response({"message":"User already logout"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
      
         
 class HasImageFilter(filters.BaseFilterBackend):
@@ -105,7 +81,7 @@ class Postview(viewsets.ModelViewSet):
     filterset_fields=['title', 'content', 'tag', 'user'] 
     filter_backends=[HasImageFilter, DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['title', 'tag']
-    pagination_class = PostNumberPagination
+    pagination_class = PostLimitOffsetPagination
     
     def get_serializer_class(self):
         if self.action in ["listall", "retrieve","list"]:
@@ -118,18 +94,11 @@ class Postview(viewsets.ModelViewSet):
         context.update({'user': user})
         return context
     
-    @action(detail=True, methods=['get'])
-    def listall(self, request,pk):
+    @action(detail=False, methods=['get'])
+    def listall(self, request):
         queryset = Post.objects.all().order_by('id')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-# class uploadORupdate(viewsets.ModelViewSet):
-#     queryset=Post.objects.all()
-#     serializer_class= Postserializers
-#     search_fields = ['tag', 'title']
-#     filterset_fields = ['title', 'tag','content','user']
-
 
 #====================================================================#   
 #For Like
@@ -159,12 +128,6 @@ def remove_like(request):
         else:
             return Response("Already didn't like the post") 
 
-    
-# class Likeview(viewsets.ModelViewSet):
-#     queryset=Like.objects.all()
-#     serializer_class= Likeserializers
-#     filterset_fields = ['user','post']
-
 
 #====================================================================#   
 #For Comment
@@ -180,11 +143,6 @@ class Commentview(viewsets.ModelViewSet):
         print(context)
         return context
 
-
-# class Commentview(viewsets.ModelViewSet):
-#     queryset=Comment.objects.all()
-#     serializer_class=Commentserializers
-#     filterset_fields = ['user','post','comment']
     
     
     
