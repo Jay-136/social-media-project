@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
+from .pagination import PostNumberPagination,PostLimitOffsetPagination,PostCursorPagination
 
 # Create your views here.
 
@@ -29,12 +30,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 #             return Response(serializer.data,status=201)
         
         
+#====================================================================#   
+#For New User Registration
+#====================================================================#        
 class Register(generics.CreateAPIView):
     queryset=CustomUser.objects.all()
     permission_classes=[AllowAny]
     serializer_class= RegistrationSerializers
     
     
+#====================================================================#   
+#For User Login
+#====================================================================#    
 class LogIn(generics.CreateAPIView):
     permission_classes=[AllowAny]
     def create(self, request, *args, **kwargs):
@@ -51,7 +58,9 @@ class LogIn(generics.CreateAPIView):
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
-        
+#====================================================================#   
+#For User Logout
+#====================================================================#       
 class Logout(generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
@@ -88,13 +97,15 @@ class HasImageFilter(filters.BaseFilterBackend):
 
 
 
-
-
-class uploadORupdate(viewsets.ModelViewSet):
+#====================================================================#   
+#For Post
+#====================================================================#
+class Postview(viewsets.ModelViewSet):
     queryset = Post.objects.prefetch_related('post_Comment', 'post_Like').all()
     filterset_fields=['title', 'content', 'tag', 'user'] 
     filter_backends=[HasImageFilter, DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['title', 'tag']
+    pagination_class = PostNumberPagination
     
     def get_serializer_class(self):
         if self.action in ["listall", "retrieve","list"]:
@@ -107,8 +118,8 @@ class uploadORupdate(viewsets.ModelViewSet):
         context.update({'user': user})
         return context
     
-    @action(detail=False, methods=['get'])
-    def listall(self, request):
+    @action(detail=True, methods=['get'])
+    def listall(self, request,pk):
         queryset = Post.objects.all().order_by('id')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -120,6 +131,9 @@ class uploadORupdate(viewsets.ModelViewSet):
 #     filterset_fields = ['title', 'tag','content','user']
 
 
+#====================================================================#   
+#For Like
+#====================================================================#
 class Likeview(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = Likeserializers
@@ -131,6 +145,10 @@ class Likeview(viewsets.ModelViewSet):
         return context
     
     
+#====================================================================#   
+#For Delete Like
+#====================================================================#
+
 @api_view(['DELETE',])
 def remove_like(request):
     if request.method == 'DELETE':
@@ -147,6 +165,10 @@ def remove_like(request):
 #     serializer_class= Likeserializers
 #     filterset_fields = ['user','post']
 
+
+#====================================================================#   
+#For Comment
+#====================================================================#
 class Commentview(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = Commentserializers

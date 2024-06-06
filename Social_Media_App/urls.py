@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'post',views.uploadORupdate)
+router.register(r'post',views.Postview)
 router.register(r'like',views.Likeview)
 router.register(r'comment',views.Commentview)
 

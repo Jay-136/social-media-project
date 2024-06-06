@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class  CustomUserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
@@ -39,21 +39,27 @@ class RegistrationSerializers(serializers.ModelSerializer):
             return serializers.ValidationError("This email is already exists")
         return value
     
-
+#====================================================================#   
+#For Post Listing
+#====================================================================#
 class Postserializers(serializers.ModelSerializer):
     comment_count = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
     user = CustomUserSerializer()
+    image_url=serializers.CharField(source='image')
     class Meta :
         model=Post
-        fields=["title","image","content","tag","user","comment_count","like_count"]
+        fields=["title","image_url","content","tag","user","comment_count","like_count"]
         
     def get_comment_count(self, obj):
         return obj.post_Comment.count()
     
     def get_like_count(self, obj):
         return obj.post_Like.count()    
-    
+
+#====================================================================#   
+#For Post Creating
+#====================================================================#   
 class PostCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
