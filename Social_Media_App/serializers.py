@@ -49,7 +49,8 @@ class Postserializers(serializers.ModelSerializer):
     image_url=serializers.CharField(source='image')
     class Meta :
         model=Post
-        fields=["title","image_url","content","tag","user","comment_count","like_count"]
+        fields=["title","image_url","content","tag","user","comment_count","like_count","id"]
+        extra_kwargs={'id':{'read_only':True}}
         
     def get_comment_count(self, obj):
         return obj.post_Comment.count()
