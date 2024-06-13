@@ -1,10 +1,12 @@
 from django.contrib import admin
 from .models import *
 from .forms import SocialAdminForm
+from import_export.admin import ImportExportActionModelAdmin
+
 # Register your models here.
 
 @admin.register(Post)
-class Postadmin(admin.ModelAdmin):
+class Postadmin(ImportExportActionModelAdmin):
     list_filter = ["user","posted_at"]
     list_display = ["tag","title","content","posted_at","view_image","user"]
     search_fields = ["title"]
@@ -33,7 +35,7 @@ class PostInline(admin.TabularInline):
     readonly_fields = ['posted_at','updated_at']
     
 @admin.register(CustomUser)    
-class CustomUseradmin(admin.ModelAdmin):
+class CustomUseradmin(ImportExportActionModelAdmin):
     list_display = ["id","username","display_fullname","email"]
     list_display_links = ["username"]
     actions = ["Give_LoginPermission"]

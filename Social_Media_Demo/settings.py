@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "phonenumber_field",
+    "import_export",
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,5 @@ EMAIL_USE_SSL = False
 
 CONTENT_TYPES = ['image/png', 'image/jpeg', 'application/pdf']
 MAX_UPLOAD_SIZE = "2621440"#50mb
+
+STATIC_ROOT = "./static"
