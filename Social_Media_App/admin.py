@@ -22,7 +22,15 @@ class Postadmin(admin.ModelAdmin):
     def view_image(self, obj):
         return obj.image
     
-    
+class PostInline(admin.TabularInline):
+    model = Post
+    fields = ['title',
+            'image',
+            'tag',
+            'user',
+            'posted_at',
+            'updated_at']
+    readonly_fields = ['posted_at','updated_at']
     
 @admin.register(CustomUser)    
 class CustomUseradmin(admin.ModelAdmin):
@@ -30,6 +38,7 @@ class CustomUseradmin(admin.ModelAdmin):
     list_display_links = ["username"]
     actions = ["Give_LoginPermission"]
     date_hierarchy = "date_joined"
+    inlines = [PostInline]
     fieldsets = [
         (   
             "User",
