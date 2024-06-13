@@ -150,3 +150,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "jay.200410116136@gmail.com"
 EMAIL_HOST_PASSWORD = "hdtthuoasdssskeo"
 EMAIL_USE_SSL = False
+
+
+CONTENT_TYPES = ['image/png', 'image/jpeg', 'application/pdf']
+MAX_UPLOAD_SIZE = "2621440"#50mb

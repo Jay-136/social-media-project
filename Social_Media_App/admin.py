@@ -1,12 +1,21 @@
 from django.contrib import admin
 from .models import *
+from .forms import SocialAdminForm
 # Register your models here.
 
 @admin.register(Post)
 class Postadmin(admin.ModelAdmin):
     list_filter = ["user","posted_at"]
-    list_display = ["tag","title","content","posted_at","view_image"]
+    list_display = ["tag","title","content","posted_at","view_image","user"]
     search_fields = ["title"]
+    search_help_text = "Searching based on title"
+    form = SocialAdminForm
+    # list_display_links = ["title"]
+    list_select_related = ["user"]
+    list_per_page = 4
+    save_as = True
+    save_as_continue = False
+    ordering = ["-title"]
     
     # exclude = ["image","posted_at","title"]
     @admin.display(empty_value="???")
@@ -17,7 +26,8 @@ class Postadmin(admin.ModelAdmin):
     
 @admin.register(CustomUser)    
 class CustomUseradmin(admin.ModelAdmin):
-    list_display = ["first_name","last_name","email"]
+    list_display = ["id","username","display_fullname","email"]
+    list_display_links = ["username"]
     actions = ["Give_LoginPermission"]
     date_hierarchy = "date_joined"
     fieldsets = [
@@ -41,6 +51,10 @@ class CustomUseradmin(admin.ModelAdmin):
     def Give_LoginPermission(modeladmin, request, queryset):
         queryset.update(is_staff=True)
 
+    def display_fullname(self,obj):
+        return f"{obj.first_name} {obj.last_name}"
+    
+    display_fullname.short_description = "Full Name"
 
 # admin.site.register(Post)
 admin.site.register(Comment)
