@@ -6,6 +6,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class CustomUser(AbstractUser):
     mobile=PhoneNumberField(null=True, blank=True)
+    
 
 
 
