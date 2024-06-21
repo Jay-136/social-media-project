@@ -2,6 +2,7 @@ from rest_framework import serializers,validators
 from .models import *
 from django.core.mail import EmailMessage
 from django.conf import settings
+from .task import Response
 
 
 class  CustomUserSerializer(serializers.ModelSerializer):
@@ -26,8 +27,9 @@ class RegistrationSerializers(serializers.ModelSerializer):
             username=self.validated_data['username'],
             email = self.validated_data['email']
         )
-        email = EmailMessage("Welcome to Social Media App",f"Hi {self.validated_data['first_name']}, thank you for registering in Social Media App.",settings.EMAIL_HOST_USER, [self.validated_data['email']])
-        email.send()
+        # email = EmailMessage("Welcome to Social Media App",f"Hi {self.validated_data['first_name']}, thank you for registering in Social Media App.",settings.EMAIL_HOST_USER, [self.validated_data['email']])
+        # email.send()
+        Response.delay(self.validated_data['first_name'],self.validated_data['email'])
         Person.set_password(self.validated_data['password'])
         Person.save()
         return Person

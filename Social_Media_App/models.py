@@ -9,6 +9,8 @@ from django.core.exceptions import ValidationError
 
 class CustomUser(AbstractUser):
     mobile=PhoneNumberField(null=True, blank=True)
+    first_name = models.CharField(("first name"), max_length=150, blank=True,null=True)
+    last_name = models.CharField(("last name"), max_length=150, blank=True,null=True)
 
 def validated_file(value):
     extentions = splitext(value.name)[1]
@@ -17,7 +19,7 @@ def validated_file(value):
         raise ValidationError("this file format is not supported")
     
     file_size = value.size
-    if file_size>3*1024*1024: #2MB
+    if file_size>3*1024*1024: #3MB
         raise ValidationError("the file size is very big")
 
 class Post(models.Model):
